@@ -2,21 +2,35 @@
 
 using namespace std;
 class Fraction{
-protected:
-    ostream writeFraction(ostream&);
-    istream readFraction(istream&);
-    friend ostream& operator<<(ostream& out, Fraction& fr){
-        return fr.writeFraction(out);
-    }
-    friend istream& operator>>(istream& in, Fraction& fr){
-        return fr.readFraction(in);
-    }
 private:
-    double value;
+    int numerator;
+    int denominator;
 public:
-    Fraction(double val) : value(val){}
-    friend Fraction operator/(const Fraction& numerator, const Fraction& dominator){
-        
+    Fraction(int num, int den) : numerator(num), denominator(den) {}
+    Fraction reduce() const {
+        int newNumerator = numerator;
+        int factor = 0;
+        while(newNumerator >= denominator){
+            newNumerator -= denominator;
+            factor++;
+        }
+        return Fraction(newNumerator, denominator);
     }
+    friend ostream& operator<<(ostream& out, const Fraction& fr){
+        Fraction reduced = fr.reduce();
+        out << reduced.numerator << reduced.denominator;
+        return out;
+    }
+    Fraction operator/(const Fraction& other) const {
+        int n = numerator * other.denominator;
+        int d = denominator * other.numerator;
 
+        return Fraction(n, d);
+    }
+    Fraction operator*(const Fraction& other) const {
+        int n = numerator / other.denominator;
+        int d = denominator / other.numerator;
+
+        return Fraction(n, d);        
+    }
 };
